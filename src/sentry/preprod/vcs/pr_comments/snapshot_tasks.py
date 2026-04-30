@@ -196,6 +196,11 @@ def create_preprod_snapshot_pr_comment_task(
         pr_number = cc.pr_number
         cc_id = cc.id
 
+    # API call runs outside the transaction so retry sleeps don't hold
+    # select_for_update locks. Concurrent tasks can theoretically both
+    # read existing_comment_id=None and create duplicate comments, but
+    # this is unlikely (tasks are spaced 5 min apart) and self-corrects
+    # on the next run.
     api_error: Exception | None = None
     comment_id: str | None = None
 
@@ -240,12 +245,18 @@ def create_preprod_snapshot_pr_comment_task(
         logger.exception("preprod.snapshot_pr_comments.create.failed", extra=extra)
         api_error = e
 
-    with transaction.atomic(db_alias):
-        cc = CommitComparison.objects.select_for_update().get(id=cc_id)
-        if api_error is not None:
-            save_pr_comment_result(cc, "snapshots", success=False, error=api_error)
-        else:
-            save_pr_comment_result(cc, "snapshots", success=True, comment_id=comment_id)
+    try:
+        with transaction.atomic(db_alias):
+            cc = CommitComparison.objects.select_for_update().get(id=cc_id)
+            if api_error is not None:
+                save_pr_comment_result(cc, "snapshots", success=False, error=api_error)
+            else:
+                save_pr_comment_result(cc, "snapshots", success=True, comment_id=comment_id)
+    except CommitComparison.DoesNotExist:
+        logger.warning(
+            "preprod.snapshot_pr_comments.create.cc_deleted",
+            extra={"artifact_id": artifact.id, "cc_id": cc_id},
+        )
 
     if api_error is not None:
         raise api_error
