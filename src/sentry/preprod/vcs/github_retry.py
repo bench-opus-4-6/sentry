@@ -25,7 +25,7 @@ def _is_retryable(exc: Exception) -> bool:
         return True
     if isinstance(exc, ApiError) and exc.code and exc.code in RETRYABLE_STATUS_CODES:
         return True
-    if isinstance(exc, (ConnectionError, TimeoutError, OSError)):
+    if isinstance(exc, (ConnectionError, TimeoutError)):
         return True
     return False
 
