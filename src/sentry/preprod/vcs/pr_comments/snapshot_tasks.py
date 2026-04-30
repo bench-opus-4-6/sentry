@@ -257,6 +257,7 @@ def create_preprod_snapshot_pr_comment_task(
             "preprod.snapshot_pr_comments.create.cc_deleted",
             extra={"artifact_id": artifact.id, "cc_id": cc_id},
         )
+        return
 
     if api_error is not None:
         raise api_error
