@@ -34,7 +34,7 @@ FEATURE_FLAG = "organizations:preprod-snapshot-pr-comments"
 @instrumented_task(
     name="sentry.preprod.tasks.create_preprod_snapshot_pr_comment",
     namespace=preprod_tasks,
-    processing_deadline_duration=30,
+    processing_deadline_duration=60,
     silo_mode=SiloMode.CELL,
     retry=Retry(times=5, delay=60 * 5),
 )
