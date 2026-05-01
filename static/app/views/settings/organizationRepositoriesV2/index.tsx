@@ -46,7 +46,7 @@ const SCM_PROVIDER_ORDER = [
   'vsts',
 ];
 
-export default function OrganizationRepositoriesV2() {
+export function OrganizationRepositoriesV2() {
   const organization = useOrganization();
   const hasAccess = hasEveryAccess(['org:integrations'], {organization});
   const [searchTerm, setSearchTerm] = useState('');
