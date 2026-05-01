@@ -134,7 +134,7 @@ export function LogsExportModal({
       </Body>
       <Footer>
         <Flex gap="xl" justify="end">
-          <Button priority="default" onClick={closeModal}>
+          <Button variant="secondary" onClick={closeModal}>
             {t('Cancel')}
           </Button>
           <form.SubmitButton priority="primary">{t('Export')}</form.SubmitButton>

@@ -203,7 +203,7 @@ function SetupLogsButton() {
   return (
     <LinkButton
       icon={<IconOpen />}
-      priority="primary"
+      variant="primary"
       href="https://docs.sentry.io/product/explore/logs/getting-started/"
       external
       onClick={() => {
