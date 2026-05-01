@@ -1,5 +1,6 @@
 import {Fragment, useState} from 'react';
 import {css} from '@emotion/react';
+import styled from '@emotion/styled';
 import {useMutation} from '@tanstack/react-query';
 
 import {Alert} from '@sentry/scraps/alert';
@@ -112,11 +113,7 @@ function DashboardRevisionsModal({
             {isRestoreError && (
               <Alert variant="danger">{t('Failed to restore this revision.')}</Alert>
             )}
-            <Flex
-              direction="column"
-              style={{maxHeight: 'min(560px, calc(100vh - 350px))'}}
-              overflowY="auto"
-            >
+            <ScrollList>
               <RevisionListItem
                 isCurrentVersion
                 isSelected={isNewestVersionSelected}
@@ -143,7 +140,7 @@ function DashboardRevisionsModal({
                   baseRevisionId={revisions?.[index + 1]?.id ?? null}
                 />
               ))}
-            </Flex>
+            </ScrollList>
           </Flex>
         ) : (
           <Flex align="center" justify="center" padding="xl">
@@ -172,3 +169,15 @@ function DashboardRevisionsModal({
     </Fragment>
   );
 }
+
+const ScrollList = styled('div')`
+  display: flex;
+  flex-direction: column;
+  max-height: min(560px, calc(100vh - 350px));
+  overflow-y: auto;
+  margin: 0 -${p => p.theme.space['2xl']};
+
+  @media (min-width: ${p => p.theme.breakpoints.md}) {
+    margin: 0 -${p => p.theme.space['3xl']};
+  }
+`;
