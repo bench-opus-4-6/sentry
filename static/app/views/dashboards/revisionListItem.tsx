@@ -319,7 +319,8 @@ const RevisionItem = styled('div')<{$isSelected: boolean}>`
   display: flex;
   flex-direction: column;
   gap: ${p => p.theme.space.md};
-  padding: ${p => p.theme.space.lg} ${p => p.theme.space['2xl']};
+  margin: 0 ${p => p.theme.space['2xl']};
+  padding: ${p => p.theme.space.lg} ${p => p.theme.space.md};
   cursor: pointer;
   transition: background 100ms ease;
   background: ${p =>
@@ -338,18 +339,13 @@ const RevisionItem = styled('div')<{$isSelected: boolean}>`
     content: '';
     position: absolute;
     bottom: 0;
-    left: ${p => p.theme.space['2xl']};
-    right: ${p => p.theme.space['2xl']};
+    left: 0;
+    right: 0;
     border-bottom: 1px solid ${p => p.theme.tokens.border.secondary};
   }
 
   @media (min-width: ${p => p.theme.breakpoints.md}) {
-    padding: ${p => p.theme.space.lg} ${p => p.theme.space['3xl']};
-
-    &:not(:last-child)::after {
-      left: ${p => p.theme.space['3xl']};
-      right: ${p => p.theme.space['3xl']};
-    }
+    margin: 0 ${p => p.theme.space['3xl']};
   }
 `;
 
