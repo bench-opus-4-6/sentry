@@ -949,7 +949,9 @@ function SentryApplicationDetailsForm({
       )}
 
       <Flex justify="end" paddingTop="xl">
-        <form.SubmitButton>{t('Save Changes')}</form.SubmitButton>
+        <form.SubmitButton aria-label={t('Save Changes')}>
+          {t('Save Changes')}
+        </form.SubmitButton>
       </Flex>
     </form.AppForm>
   );

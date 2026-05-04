@@ -12,6 +12,7 @@ import {
 } from 'sentry-test/reactTestingLibrary';
 import {selectEvent} from 'sentry-test/selectEvent';
 
+import type {SentryApp} from 'sentry/types/integrations';
 import SentryApplicationDetails from 'sentry/views/settings/organizationDeveloperSettings/sentryApplicationDetails';
 
 describe('Sentry Application Details', () => {
