@@ -13,6 +13,7 @@ from sentry.dynamic_sampling.tasks.common import (
     OrganizationDataVolume,
 )
 from sentry.dynamic_sampling.tasks.constants import CHUNK_SIZE
+from sentry.dynamic_sampling.types import SamplingMeasure
 from sentry.models.organization import Organization
 from sentry.models.project import Project
 from sentry.search.eap.constants import SAMPLING_MODE_HIGHEST_ACCURACY
@@ -23,13 +24,20 @@ from sentry.snuba.spans_rpc import Spans
 
 ProjectVolumes = tuple[ProjectId, int, DecisionKeepCount, DecisionDropCount]
 
+EAP_ORGANIZATION_VOLUME_QUERY_STRINGS = {
+    SamplingMeasure.SEGMENTS: "is_transaction:true",
+    SamplingMeasure.SPANS: "",
+}
+
 
 def _get_aggregate_int(row: Mapping[str, Any], column: str) -> int:
-    return int(row.get(column, 0))
+    value = row.get(column)
+    return int(value) if value is not None else 0
 
 
 def get_eap_organization_volume(
     organization: Organization,
+    measure: SamplingMeasure = SamplingMeasure.SEGMENTS,
     time_interval: timedelta = ACTIVE_ORGS_VOLUMES_DEFAULT_TIME_INTERVAL,
 ) -> OrganizationDataVolume | None:
     projects = list(
@@ -47,7 +55,7 @@ def get_eap_organization_volume(
             projects=projects,
             organization=organization,
         ),
-        query_string="is_transaction:true",
+        query_string=EAP_ORGANIZATION_VOLUME_QUERY_STRINGS[measure],
         selected_columns=["count()", "count_sample()"],
         orderby=None,
         offset=0,
