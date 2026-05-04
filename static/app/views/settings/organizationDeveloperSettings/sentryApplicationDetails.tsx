@@ -279,7 +279,7 @@ export default function SentryApplicationDetails() {
   const SENTRY_APP_QUERY_KEY = makeSentryAppQueryKey(appSlug);
 
   const {
-    data: app = undefined,
+    data: app,
     isPending,
     isError,
     refetch,
@@ -288,7 +288,7 @@ export default function SentryApplicationDetails() {
     enabled: isEditingApp,
     placeholderData: () => {
       if (!appSlug) {
-        return undefined;
+        return;
       }
 
       // eslint-disable-next-line @sentry/no-query-data-type-parameters
@@ -298,12 +298,12 @@ export default function SentryApplicationDetails() {
         }),
       ]);
 
-      if (listData) {
-        const found = listData[0].find(item => item.slug === appSlug);
-        return found ? [found, listData[1], listData[2]] : undefined;
+      if (!listData) {
+        return;
       }
 
-      return undefined;
+      const found = listData[0].find(item => item.slug === appSlug);
+      return found ? [found, listData[1], listData[2]] : undefined;
     },
   });
 
@@ -937,7 +937,7 @@ function SentryApplicationDetailsForm({
                         )}
                         errorMessage={t('Error rotating secret')}
                       >
-                        <Button priority="danger">{t('Rotate client secret')}</Button>
+                        <Button variant="danger">{t('Rotate client secret')}</Button>
                       </Confirm>
                     ) : undefined}
                   </ClientSecret>
