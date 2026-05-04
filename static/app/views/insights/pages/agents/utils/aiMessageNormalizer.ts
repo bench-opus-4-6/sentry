@@ -27,6 +27,10 @@ type RawMessage = {
   roleExplicit?: boolean;
 };
 
+// Keep this parser mirrored with src/sentry/utils/ai_message_normalizer.py.
+// AI SDKs emit inconsistent shapes and their specs keep changing, so update both
+// parsers together whenever adding or changing a supported format.
+
 /**
  * Normalizes AI attribute values into a list of messages.
  *
@@ -233,6 +237,13 @@ function toRawMessage(item: unknown, defaultRole: string): RawMessage | null {
       content: item.content,
     };
   }
+  if (item.completion !== undefined) {
+    return {
+      role: role ?? defaultRole,
+      roleExplicit: role !== undefined,
+      content: item.completion,
+    };
+  }
   return null;
 }
 
@@ -313,7 +324,7 @@ function collectOutputExtras(
     return;
   }
 
-  const content = msg.content;
+  const content = tryParseJsonRecursive(msg.content);
   if (content === undefined || content === null) {
     return;
   }
