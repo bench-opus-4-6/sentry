@@ -126,6 +126,7 @@ describe('Sentry Application Details', () => {
         isAlertable: true,
         allowedOrigins: [],
         schema: {},
+        overview: '',
       };
 
       expect(createAppRequest).toHaveBeenCalledWith(
@@ -485,6 +486,34 @@ describe('Sentry Application Details', () => {
             redirectUrl: 'https://hello.com/',
             events: [],
           }),
+          method: 'PUT',
+        })
+      );
+    });
+
+    it('sends empty strings for cleared optional fields', async () => {
+      renderComponent();
+      await screen.findByRole('button', {name: 'Save Changes'});
+
+      expect(screen.getByRole('textbox', {name: 'Redirect URL'})).toHaveValue(
+        sentryApp.redirectUrl
+      );
+      expect(screen.getByRole('textbox', {name: 'Overview'})).toHaveValue(
+        sentryApp.overview
+      );
+
+      await userEvent.clear(screen.getByRole('textbox', {name: 'Redirect URL'}));
+      await userEvent.clear(screen.getByRole('textbox', {name: 'Overview'}));
+
+      await userEvent.click(screen.getByRole('textbox', {name: 'Schema'}));
+      await userEvent.paste('{}');
+
+      await userEvent.click(screen.getByRole('button', {name: 'Save Changes'}));
+
+      expect(editAppRequest).toHaveBeenCalledWith(
+        `/sentry-apps/${sentryApp.slug}/`,
+        expect.objectContaining({
+          data: expect.objectContaining({redirectUrl: '', overview: ''}),
           method: 'PUT',
         })
       );

@@ -574,9 +574,9 @@ function SentryApplicationDetailsForm({
         events: value.events,
         allowedOrigins: extractMultilineFields(value.allowedOrigins),
         schema: value.schema.trim() === '' ? {} : JSON.parse(value.schema),
-        ...(value.author.trim() ? {author: value.author} : {}),
-        ...(value.redirectUrl.trim() ? {redirectUrl: value.redirectUrl} : {}),
-        ...(value.overview.trim() ? {overview: value.overview} : {}),
+        author: value.author,
+        redirectUrl: value.redirectUrl,
+        overview: value.overview,
       };
 
       return saveSentryAppMutation.mutateAsync(payload).catch(error => {
